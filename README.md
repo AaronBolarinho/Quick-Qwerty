@@ -1,2 +1,2 @@
-# Quick-Querty
-Quick Querty is a speed typing game, created for a coding test.
+# Quick-Qwerty
+Quick Qwerty is a speed typing game, created for a coding test.
