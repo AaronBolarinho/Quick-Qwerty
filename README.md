@@ -57,4 +57,4 @@ If I had an extra week, I would:
 - implement a easy, medium, and hard mode button where the api words returned are filtered for length, then given back to the user according to their word length preference.
 
 ### The Main Page
-![""](https://github.com/AaronBolarinho/Quick-Qwerty/blob/master/my-app/src/css/Screenshot%20from%202019-07-19%2016-05-38.png](https://github.com/AaronBolarinho/Quick-Qwerty/blob/master/my-app/src/css/Screenshot%20from%202019-07-19%2016-05-38.png))
+![""](https://github.com/AaronBolarinho/Quick-Qwerty/blob/master/my-app/src/css/Screenshot%20from%202019-07-19%2016-05-38.png](https://github.com/AaronBolarinho/Quick-Qwerty/blob/master/my-app/src/css/Screenshot%20from%202019-07-19%2016-05-38.png)
