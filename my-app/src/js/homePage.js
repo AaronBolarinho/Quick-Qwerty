@@ -29,7 +29,20 @@ class Home extends Component {
     this.setState({ userName: e.target.name.value })
     this.setState({ named: true })
 
-    axios.get('https://random-word-api.herokuapp.com/word?key=YAXA7AVG&number=500')
+    axios.get('https://random-word-api.herokuapp.com/key?')
+      .then(response => {
+        const myVariable1 = response.data
+        console.log('this is the api key hopefully', myVariable1)
+        // this.setState({ randomWord: myVariable })
+        // this.setState({ typerWord: this.state.randomWord[0] })
+      })
+      .catch(error => {
+        console.log(error)
+      })
+
+      let apiKey = 'SXBHFHIL'
+
+    axios.get(`https://random-word-api.herokuapp.com/word?key=${apiKey}&number=500`)
       .then(response => {
         const myVariable = response.data
 
