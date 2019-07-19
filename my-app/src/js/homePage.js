@@ -4,8 +4,6 @@ import '../css/App.css'
 import Timer from 'react-compound-timer'
 //
 import axios from 'axios'
-//
-import $ from 'jquery'
 
 
 class Home extends Component {
@@ -17,16 +15,21 @@ class Home extends Component {
       score: 0,
       typerWord: '',
       randomWord: ['(Name yourself first)'],
-      gameOver: false
+      gameOver: false,
+      timerStarted: false
     }
   }
+
+  // This handler runs after a user name is entered
+  // it sets the state of the userName, and also makes
+  // a fresh api call for a fresh set of words.
 
   enterName = (e) => {
     e.preventDefault()
     this.setState({ userName: e.target.name.value })
     this.setState({ named: true })
 
-    axios.get('https://random-word-api.herokuapp.com/word?key=LQMAIY5W&number=1000')
+    axios.get('https://random-word-api.herokuapp.com/word?key=LQMAIY5W&number=500')
       .then(response => {
         const myVariable = response.data
 
@@ -38,15 +41,49 @@ class Home extends Component {
       })
   }
 
+  // this function starts the game and allows unimpeded
+  // typing in the typer form
+  gameStarted = () => {
+    this.setState({ timerStarted: true })
+  }
+
+  // this function ends the game and displays the final
+  // html
+  gameOver = () => {
+    this.setState({ gameOver: true })
+  }
+
+
+  // this function handles the user's typing in the
+  //typerForm
+  handleChange = (e) => {
+    e.preventDefault()
+
+    let wordInProg = e.target.value
+    let finalWord = wordInProg.toLowerCase()
+    console.log('this word in prog', wordInProg)
+
+    if (!this.state.timerStarted) {
+      alert('Please start the timer :)')
+    } else if (finalWord === this.state.typerWord) {
+      console.log('matched!')
+      this.state.score++
+      this.setState({ typerWord: this.state.randomWord[this.state.score] })
+      document.getElementById('typer-form').reset()
+    }
+  }
+
+  // these functions conditionally render all my html:
+  // renderName, renderScore, renderWord, renderTimer, and renderTyper
   renderName = () => {
     let nameForm
 
     if (!this.state.named) {
       nameForm =
-        <div>
+        <div className='nameForm'>
           <form onSubmit={this.enterName}>
-            <label>
-              Name yourself Keyboard Warrior!
+            <label className="whiteTxt">
+              Name Thyself...Keyboard Warrior!
               <br></br>
               <input type='text' name='name' />
             </label>
@@ -55,8 +92,9 @@ class Home extends Component {
           </form>
         </div>
     } else {
-      nameForm = <div>
-        <p>{this.state.userName}!!</p>
+      nameForm = <div className='nameForm2'>
+        <p className='whiteTxt'>{this.state.userName}!!</p>
+        <br></br>
         {this.renderScore()}
       </div>
     }   
@@ -68,13 +106,13 @@ class Home extends Component {
 
     if (this.state.score === 0) {
       score =
-      <div>
+      <div className="whiteTxt">
         <p> Your Score is...</p>
         <p>Nothing Yet!</p>
       </div>
     } else {
       score =
-      <div>
+      <div className="whiteTxt">
         <p> Your Score is...</p>
         <p>{this.state.score}</p>
       </div>
@@ -85,41 +123,46 @@ class Home extends Component {
   renderWord = () => {
     let word
 
-    if (this.state.named) { word =
+    if (this.state.named) {
+      word =
       <div>
-        <p>Press start and Go!</p>
-        <p>Type it quick! --> {this.state.typerWord}</p>
+        <div className='whiteTxt randomWord3'>
+          <p>Press start and Go!</p>
+        </div>
+        <div className='whiteTxt randomWord2'>
+          <span>Type it quick! --> </span>
+          <span className='typerWord'>{this.state.typerWord}</span>
+        </div>
       </div>
     } else { word =
-      <div>
+      <div className='whiteTxt randomWord'>
         <p>Your First word is...{this.state.randomWord[0]}</p>
       </div>
     }     
     return word
   }
 
-  gameOver = () => {
-    this.setState({ gameOver: true })
-  }
-
   renderTimer = () => {
     let timer =
-      <div className='ClockTest'>
+      <div className='clock'>
         <Timer
-          // initialTime={300000}
-          initialTime={30000}
+          initialTime={180000}
           startImmediately={false}
           direction='backward'
           checkpoints={[
             {
               time: 5,
               callback: () => this.gameOver()
+            },
+            {
+              time: 179999,
+              callback: () => this.gameStarted()
             }
           ]}
         >
           {({ start }) => (
             <React.Fragment>
-              <div>
+              <div className='whiteTxt'>
                 <Timer.Minutes formatValue={value => `${value} minutes `} />
                 <Timer.Seconds /> seconds
               </div>
@@ -133,53 +176,42 @@ class Home extends Component {
     return timer
   }
 
-  handleChange = (e) => {
-    e.preventDefault()
-    console.log('this event is firing')
-    let wordInProg = e.target.value
-    let finalWord = wordInProg.toLowerCase()
-    console.log('this word in prog', wordInProg)
-    if (finalWord === this.state.typerWord) {
-      console.log('matched!')
-      this.state.score++
-      this.setState({ typerWord: this.state.randomWord[this.state.score] })
-      document.getElementById('typer-form').reset()
-    }
-    // if event.target.typedAnswer.
-  }
-
   renderTyper = () => {
-    let typer =
-        <div>
-          <form id="typer-form">
-            <input onChange={this.handleChange}
+    let typer
+
+    if (this.state.named) {
+      typer =
+        <div className='typerForm'>
+          <form id='typer-form'>
+            <input className='typerFormInput'
+              onChange={this.handleChange}
               type='textarea'
               placeholder='Type Qwerty Quick!'
               name='typedAnswer'
               required/>
           </form>
           <div>
-            <p>Only hit enter to reset :P</p>
+            <p className='whiteTxt'>Only hit enter to reset :P</p>
           </div>
         </div>
+      }
     return typer
   }
 
-  componentDidMount() {
-  }
-
   render() {
-    console.log('this is the state', this.state)
-
     if (this.state.gameOver) {
-      return <div>
-        <p> Well done {this.state.userName}! Your Score is {this.state.score}</p>
-        <p>Reload the page to play again!</p>
+      return <div className='homePg whiteTxt'>
+        <div className='gameOver1'>
+          <p> Well done {this.state.userName}! Your Score is {this.state.score}</p>
+        </div>
+        <div className='gameOver2'>
+          <p> Reload the page to play again!</p>
+        </div>
       </div>
     } else {
       return (
-        <div>
-          <div>
+        <div className='homePg'>
+          <div className='whiteTxt title'>
             <p> Quick Qwerty</p>
           </div>
           {this.renderName()}
