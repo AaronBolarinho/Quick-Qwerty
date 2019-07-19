@@ -24,34 +24,13 @@ class Home extends Component {
   // it sets the state of the userName, and also makes
   // a fresh api call for a fresh set of words.
 
+  // ** moved the api call to componantDidMount in attempt to
+  // fix the issue of the short timeout of the API key
+
   enterName = (e) => {
     e.preventDefault()
     this.setState({ userName: e.target.name.value })
     this.setState({ named: true })
-
-    axios.get('https://random-word-api.herokuapp.com/key?')
-      .then(response => {
-        const myVariable1 = response.data
-        console.log('this is the api key hopefully', myVariable1)
-        // this.setState({ randomWord: myVariable })
-        // this.setState({ typerWord: this.state.randomWord[0] })
-      })
-      .catch(error => {
-        console.log(error)
-      })
-
-      let apiKey = 'SXBHFHIL'
-
-    axios.get(`https://random-word-api.herokuapp.com/word?key=${apiKey}&number=500`)
-      .then(response => {
-        const myVariable = response.data
-
-        this.setState({ randomWord: myVariable })
-        this.setState({ typerWord: this.state.randomWord[0] })
-      })
-      .catch(error => {
-        console.log(error)
-      })
   }
 
   // this function starts the game and allows unimpeded
@@ -81,7 +60,8 @@ class Home extends Component {
     } else if (finalWord === this.state.typerWord) {
       console.log('matched!')
       this.state.score++
-      this.setState({ typerWord: this.state.randomWord[this.state.score] })
+      let randomNum = Math.floor((Math.random() * 3091) + 1)
+      this.setState({ typerWord: this.state.randomWord[randomNum] })
       document.getElementById('typer-form').reset()
     }
   }
@@ -159,7 +139,7 @@ class Home extends Component {
     let timer =
       <div className='clock'>
         <Timer
-          initialTime={180000}
+          initialTime={1800}
           startImmediately={false}
           direction='backward'
           checkpoints={[
@@ -211,7 +191,24 @@ class Home extends Component {
     return typer
   }
 
+  componentDidMount() {
+
+    let apiKey = '38FDMBHI'
+
+    axios.get(`https://random-word-api.herokuapp.com/all?key=${apiKey}`)
+      .then(response => {
+        const myVariable = response.data
+
+        this.setState({ randomWord: myVariable })
+        this.setState({ typerWord: this.state.randomWord[0] })
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
   render() {
+    console.log('This is the state', this.state)
     if (this.state.gameOver) {
       return <div className='homePg whiteTxt'>
         <div className='gameOver1'>

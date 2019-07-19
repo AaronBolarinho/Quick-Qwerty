@@ -118,4 +118,76 @@ table { border-collapse: collapse; border-spacing: 0;}
   font-size: 14px;
 }
 
+@media screen and (max-width: 768px) {
+
+    .title {
+      position: absolute;
+      top: 10%;
+      right: 10%;
+      font-size: 256%;
+  }
+
+    .nameForm {
+      position: absolute;
+      right: 7%;
+      top: 25%;
+      font-size: 111%;
+      text-align: center;
+  }
+
+  .randomWord {
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    font-size: 135%;
+    text-align: center;
+}
+
+.clock {
+    position: absolute;
+    top: 80%;
+    left: 35%;
+    font-size: 223%;
+}
+
+.nameForm2 {
+    position: absolute;
+    right: 19%;
+    top: 30%;
+    font-size: 160%;
+    text-align: center;
+}
+
+.randomWord2 {
+    position: absolute;
+    left: 37%;
+    top: 63%;
+    font-size: 120%;
+    text-align: center;
+}
+
+.typerForm {
+    position: absolute;
+    top: 73%;
+    left: 36%;
+    font-size: 125%;
+    text-align: center;
+}
+
+.gameOver1 {
+    position: absolute;
+    left: 29%;
+    top: 52%;
+    font-size: 188%;
+}
+
+.gameOver2 {
+    position: absolute;
+    left: 30%;
+    top: 60%;
+    font-size: 205%;
+}
+
+}
+
 
