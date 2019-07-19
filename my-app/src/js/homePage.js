@@ -14,7 +14,7 @@ class Home extends Component {
       named: false,
       score: 0,
       typerWord: '',
-      randomWord: ['(Name yourself first)'],
+      randomWord: '',
       gameOver: false,
       timerStarted: false
     }
@@ -129,7 +129,7 @@ class Home extends Component {
       </div>
     } else { word =
       <div className='whiteTxt randomWord'>
-        <p>Your First word is...{this.state.randomWord[0]}</p>
+        <p>Your First word is...(Name yourself first)</p>
       </div>
     }     
     return word
@@ -139,7 +139,7 @@ class Home extends Component {
     let timer =
       <div className='clock'>
         <Timer
-          initialTime={1800}
+          initialTime={180000}
           startImmediately={false}
           direction='backward'
           checkpoints={[
@@ -195,12 +195,14 @@ class Home extends Component {
 
     let apiKey = '38FDMBHI'
 
+    let randomNum = Math.floor((Math.random() * 3091) + 1)
+
     axios.get(`https://random-word-api.herokuapp.com/all?key=${apiKey}`)
       .then(response => {
         const myVariable = response.data
 
         this.setState({ randomWord: myVariable })
-        this.setState({ typerWord: this.state.randomWord[0] })
+        this.setState({ typerWord: this.state.randomWord[randomNum] })
       })
       .catch(error => {
         console.log(error)
