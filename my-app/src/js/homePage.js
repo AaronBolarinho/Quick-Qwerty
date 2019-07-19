@@ -56,37 +56,36 @@ class Home extends Component {
         </div>
     } else {
       nameForm = <div>
-      <p>{this.state.userName}!!</p>
-      {this.renderScore()}
-    </div>
-    }
-      
-      return nameForm
+        <p>{this.state.userName}!!</p>
+        {this.renderScore()}
+      </div>
+    }   
+    return nameForm
   }
 
   renderScore = () => {
     let score
 
-    if(this.state.score === 0){ score = 
+    if (this.state.score === 0) {
+      score =
       <div>
-      <p> Your Score is...</p>
-      <p>Nothing Yet!</p>
-    </div>
-
-    } else { score =
+        <p> Your Score is...</p>
+        <p>Nothing Yet!</p>
+      </div>
+    } else {
+      score =
       <div>
-      <p> Your Score is...</p>
-      <p>{this.state.score}</p>
-    </div>
-    }
-      
-      return score
+        <p> Your Score is...</p>
+        <p>{this.state.score}</p>
+      </div>
+    }    
+    return score
   }
 
   renderWord = () => {
     let word
 
-    if (this.state.named) {word =
+    if (this.state.named) { word =
       <div>
         <p>Press start and Go!</p>
         <p>Type it quick! --> {this.state.typerWord}</p>
@@ -95,20 +94,30 @@ class Home extends Component {
       <div>
         <p>Your First word is...{this.state.randomWord[0]}</p>
       </div>
-    }
-      
-      return word
+    }     
+    return word
+  }
+
+  gameOver = () => {
+    this.setState({ gameOver: true })
   }
 
   renderTimer = () => {
     let timer =
       <div className='ClockTest'>
         <Timer
-          initialTime={300000}
+          // initialTime={300000}
+          initialTime={30000}
           startImmediately={false}
           direction='backward'
+          checkpoints={[
+            {
+              time: 5,
+              callback: () => this.gameOver()
+            }
+          ]}
         >
-          {({ start, resume, pause, stop, reset, timerState }) => (
+          {({ start }) => (
             <React.Fragment>
               <div>
                 <Timer.Minutes formatValue={value => `${value} minutes `} />
@@ -120,8 +129,7 @@ class Home extends Component {
             </React.Fragment>
           )}
         </Timer>
-      </div>
-     
+      </div>   
     return timer
   }
 
@@ -144,18 +152,17 @@ class Home extends Component {
     let typer =
         <div>
           <form id="typer-form">
-              <input onChange={this.handleChange}
+            <input onChange={this.handleChange}
               type='textarea'
               placeholder='Type Qwerty Quick!'
               name='typedAnswer'
               required/>
           </form>
           <div>
-                <p>Only hit enter to reset :P</p>
-              </div>
+            <p>Only hit enter to reset :P</p>
+          </div>
         </div>
-      
-      return typer
+    return typer
   }
 
   componentDidMount() {
@@ -163,17 +170,25 @@ class Home extends Component {
 
   render() {
     console.log('this is the state', this.state)
-    return (
-      <div>
-        <div> 
-          <p> Quick Qwerty</p>
-        </div>
-    	   {this.renderName()}
-         {this.renderWord()}
-         {this.renderTimer()}
-         {this.renderTyper()}
+
+    if (this.state.gameOver) {
+      return <div>
+        <p> Well done {this.state.userName}! Your Score is {this.state.score}</p>
+        <p>Reload the page to play again!</p>
       </div>
-    )
+    } else {
+      return (
+        <div>
+          <div>
+            <p> Quick Qwerty</p>
+          </div>
+          {this.renderName()}
+          {this.renderWord()}
+          {this.renderTimer()}
+          {this.renderTyper()}
+        </div>
+      )
+    }
   }
 }
 
