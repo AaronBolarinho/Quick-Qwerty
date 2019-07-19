@@ -29,7 +29,7 @@ class Home extends Component {
     this.setState({ userName: e.target.name.value })
     this.setState({ named: true })
 
-    axios.get('https://random-word-api.herokuapp.com/word?key=LQMAIY5W&number=500')
+    axios.get('https://random-word-api.herokuapp.com/word?key=YAXA7AVG&number=500')
       .then(response => {
         const myVariable = response.data
 
