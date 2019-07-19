@@ -191,7 +191,7 @@ class Home extends Component {
               required/>
           </form>
           <div>
-            <p className='whiteTxt'>Only hit enter to reset :P</p>
+            <p className='whiteTxt tinyTxt'>While typing, pressing enter will reload the page (no need to press it)</p>
           </div>
         </div>
       }
