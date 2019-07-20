@@ -118,6 +118,83 @@ table { border-collapse: collapse; border-spacing: 0;}
   font-size: 14px;
 }
 
+@media screen and (max-width: 1390px) and (min-width: 769px) {
+
+  .whiteTxt {
+  color: white;
+}
+
+.title {
+    position: absolute;
+    top: 10%;
+    right: 10%;
+    font-size: 351%;
+}
+
+.nameForm {
+    position: absolute;
+    right: 15%;
+    top: 24%;
+    font-size: 100%;
+    text-align: center;
+}
+
+.randomWord {
+    position: absolute;
+    right: 7%;
+    top: 46%;
+    font-size: 170%;
+    text-align: center;
+}
+
+.clock {
+    position: absolute;
+    top: 85%;
+    left: 51%;
+    font-size: 210%;
+}
+
+.nameForm2 {
+    position: absolute;
+    right: 18%;
+    top: 27%;
+    font-size: 202%;
+    text-align: center;
+}
+
+.randomWord3 {
+    position: absolute;
+    right: 18%;
+    top: 55%;
+    font-size: 162%;
+    text-align: center;
+}
+
+.randomWord2 {
+    position: absolute;
+    left: 39%;
+    top: 63%;
+    font-size: 128%;
+    text-align: center;
+}
+
+.typerForm {
+    position: absolute;
+    top: 76%;
+    left: 44%;
+    font-size: 204%;
+    text-align: center;
+}
+
+.gameOver2 {
+    position: absolute;
+    left: 54%;
+    top: 75%;
+    font-size: 193%;
+}
+
+}
+
 @media screen and (max-width: 768px) {
 
     .title {
@@ -127,10 +204,10 @@ table { border-collapse: collapse; border-spacing: 0;}
       font-size: 256%;
   }
 
-    .nameForm {
+  .nameForm {
       position: absolute;
       right: 7%;
-      top: 25%;
+      top: 40%;
       font-size: 111%;
       text-align: center;
   }
@@ -138,21 +215,21 @@ table { border-collapse: collapse; border-spacing: 0;}
   .randomWord {
     position: absolute;
     right: 5%;
-    top: 50%;
+    top: 55%;
     font-size: 135%;
     text-align: center;
 }
 
 .clock {
     position: absolute;
-    top: 80%;
+    top: 84%;
     left: 35%;
     font-size: 223%;
 }
 
 .nameForm2 {
     position: absolute;
-    right: 19%;
+    right: 16%;
     top: 30%;
     font-size: 160%;
     text-align: center;
@@ -160,9 +237,17 @@ table { border-collapse: collapse; border-spacing: 0;}
 
 .randomWord2 {
     position: absolute;
-    left: 37%;
-    top: 63%;
+    left: 19%;
+    top: 58%;
     font-size: 120%;
+    text-align: center;
+}
+
+.randomWord3 {
+    position: absolute;
+    right: 18%;
+    top: 52%;
+    font-size: 125%;
     text-align: center;
 }
 
@@ -184,8 +269,8 @@ table { border-collapse: collapse; border-spacing: 0;}
 .gameOver2 {
     position: absolute;
     left: 30%;
-    top: 60%;
-    font-size: 205%;
+    top: 69%;
+    font-size: 161%;
 }
 
 }
