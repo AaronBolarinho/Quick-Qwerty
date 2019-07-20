@@ -16,7 +16,8 @@ class Home extends Component {
       typerWord: '',
       randomWord: '',
       gameOver: false,
-      timerStarted: false
+      timerStarted: false,
+      pointsTimer: 0
     }
   }
 
@@ -45,20 +46,28 @@ class Home extends Component {
     this.setState({ gameOver: true })
   }
 
+  trackSpeed = () => {
+    console.log('trackSpeedRan!')
+    }
+
 
   // this function handles the user's typing in the
-  //typerForm
+  // typerForm
   handleChange = (e) => {
     e.preventDefault()
 
     let wordInProg = e.target.value
     let finalWord = wordInProg.toLowerCase()
-    console.log('this word in prog', wordInProg)
+
+    // setTimeout(this.trackSpeed, 1000)
+
+    if (wordInProg.length === 1) {
+      this.trackSpeed()
+    }
 
     if (!this.state.timerStarted) {
       alert('Please start the timer :)')
     } else if (finalWord === this.state.typerWord) {
-      console.log('matched!')
       this.state.score++
       let randomNum = Math.floor((Math.random() * 3091) + 1)
       this.setState({ typerWord: this.state.randomWord[randomNum] })
@@ -193,7 +202,7 @@ class Home extends Component {
 
   componentDidMount() {
 
-    let apiKey = '38FDMBHI'
+    let apiKey = 'I98AAG3Y'
 
     let randomNum = Math.floor((Math.random() * 3091) + 1)
 
