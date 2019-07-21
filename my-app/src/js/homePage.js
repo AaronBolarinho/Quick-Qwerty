@@ -4,6 +4,8 @@ import '../css/App.css'
 import Timer from 'react-compound-timer'
 //
 import axios from 'axios'
+//
+import $ from 'jquery'
 
 
 class Home extends Component {
@@ -17,16 +19,13 @@ class Home extends Component {
       randomWord: '',
       gameOver: false,
       timerStarted: false,
-      pointsTimer: 0
+      pointsTimer: 0,
+      apiKey: ''
     }
   }
 
   // This handler runs after a user name is entered
-  // it sets the state of the userName, and also makes
-  // a fresh api call for a fresh set of words.
-
-  // ** moved the api call to componantDidMount in attempt to
-  // fix the issue of the short timeout of the API key
+  // it sets the state of the userName
 
   enterName = (e) => {
     e.preventDefault()
@@ -48,8 +47,9 @@ class Home extends Component {
 
   trackSpeed = () => {
     console.log('trackSpeedRan!')
-    }
 
+    // setTimeout(myFunction, 3000)
+  }
 
   // this function handles the user's typing in the
   // typerForm
@@ -68,11 +68,29 @@ class Home extends Component {
     if (!this.state.timerStarted) {
       alert('Please start the timer :)')
     } else if (finalWord === this.state.typerWord) {
-      this.state.score++
+      // this.state.score++
+      this.setState({ score: this.state.score++ })
       let randomNum = Math.floor((Math.random() * 3091) + 1)
       this.setState({ typerWord: this.state.randomWord[randomNum] })
       document.getElementById('typer-form').reset()
     }
+  }
+
+  // This makes the api call to get the words list from
+  // random-word-api
+  getWordsList = () => {
+    let randomNum = Math.floor((Math.random() * 3091) + 1)
+
+    axios.get(`https://random-word-api.herokuapp.com/all?key=${this.state.apiKey}`)
+      .then(response => {
+        const myVariable = response.data
+
+        this.setState({ randomWord: myVariable })
+        this.setState({ typerWord: this.state.randomWord[randomNum] })
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   // these functions conditionally render all my html:
@@ -200,22 +218,15 @@ class Home extends Component {
     return typer
   }
 
+  // Here I scrape random-word-api for a new api key,
+  // then I call getWordsList to make the api call
   componentDidMount() {
+    let that = this
 
-    let apiKey = 'I98AAG3Y'
-
-    let randomNum = Math.floor((Math.random() * 3091) + 1)
-
-    axios.get(`https://random-word-api.herokuapp.com/all?key=${apiKey}`)
-      .then(response => {
-        const myVariable = response.data
-
-        this.setState({ randomWord: myVariable })
-        this.setState({ typerWord: this.state.randomWord[randomNum] })
-      })
-      .catch(error => {
-        console.log(error)
-      })
+    $.getJSON('http://www.whateverorigin.org/get?url=' + encodeURIComponent('https://random-word-api.herokuapp.com/key?') + '&callback=?', function (data) {
+      that.setState({ apiKey: data.contents })
+      that.getWordsList()
+    })
   }
 
   render() {
