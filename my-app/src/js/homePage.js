@@ -68,8 +68,7 @@ class Home extends Component {
     if (!this.state.timerStarted) {
       alert('Please start the timer :)')
     } else if (finalWord === this.state.typerWord) {
-      // this.state.score++
-      this.setState({ score: this.state.score++ })
+      this.state.score++
       let randomNum = Math.floor((Math.random() * 3091) + 1)
       this.setState({ typerWord: this.state.randomWord[randomNum] })
       document.getElementById('typer-form').reset()
