@@ -223,7 +223,7 @@ class Home extends Component {
   componentDidMount() {
     let that = this
 
-    $.getJSON('http://www.whateverorigin.org/get?url=' + encodeURIComponent('https://random-word-api.herokuapp.com/key?') + '&callback=?', function (data) {
+    $.getJSON('https://whatever-origin.herokuapp.com/get?url=' + encodeURIComponent('https://random-word-api.herokuapp.com/key?') + '&callback=?', function (data) {
       that.setState({ apiKey: data.contents })
       that.getWordsList()
     })
