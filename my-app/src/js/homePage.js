@@ -6,6 +6,11 @@ import Timer from 'react-compound-timer'
 import axios from 'axios'
 //
 import $ from 'jquery'
+//
+// This was added as a failsafe in case
+// the random word API server went down.
+// It is explained a little more below.
+import randomWords from 'random-words'
 
 
 class Home extends Component {
@@ -33,13 +38,13 @@ class Home extends Component {
     this.setState({ named: true })
   }
 
-  // this function starts the game and allows unimpeded
+  // This function starts the game and allows unimpeded
   // typing in the typer form
   gameStarted = () => {
     this.setState({ timerStarted: true })
   }
 
-  // this function ends the game and displays the final
+  // This function ends the game and displays the final
   // html
   gameOver = () => {
     this.setState({ gameOver: true })
@@ -51,7 +56,7 @@ class Home extends Component {
     // setTimeout(myFunction, 3000)
   }
 
-  // this function handles the user's typing in the
+  // This function handles the user's typing in the
   // typerForm
   handleChange = (e) => {
     e.preventDefault()
@@ -69,7 +74,7 @@ class Home extends Component {
       alert('Please start the timer :)')
     } else if (finalWord === this.state.typerWord) {
       this.state.score++
-      let randomNum = Math.floor((Math.random() * 3091) + 1)
+      let randomNum = Math.floor((Math.random() * 1000) + 1)
       this.setState({ typerWord: this.state.randomWord[randomNum] })
       document.getElementById('typer-form').reset()
     }
@@ -92,7 +97,7 @@ class Home extends Component {
       })
   }
 
-  // these functions conditionally render all my html:
+  // These functions conditionally render most of my html:
   // renderName, renderScore, renderWord, renderTimer, and renderTyper
   renderName = () => {
     let nameForm
@@ -101,10 +106,10 @@ class Home extends Component {
       nameForm =
         <div className='nameForm'>
           <form onSubmit={this.enterName}>
-            <label className="whiteTxt">
+            <label className='whiteTxt'>
               Name Thyself...Keyboard Warrior!
               <br></br>
-              <input type='text' name='name' />
+              <input type='text' name='name' required/>
             </label>
             <br></br>
             <input type='submit' value='I am so named' />
@@ -157,7 +162,7 @@ class Home extends Component {
       <div className='whiteTxt randomWord'>
         <p>Your First word is...(Name yourself first)</p>
       </div>
-    }     
+    }    
     return word
   }
 
@@ -224,7 +229,20 @@ class Home extends Component {
 
     $.getJSON('https://whatever-origin.herokuapp.com/get?url=' + encodeURIComponent('https://random-word-api.herokuapp.com/key?') + '&callback=?', function (data) {
       that.setState({ apiKey: data.contents })
-      that.getWordsList()
+
+      // this if statement was created in case random word
+      // api server goes down. If the server is down, the app
+      // uses its own internal random word npm package.
+      // If the api site is live, it will use it!
+
+      if (that.state.apiKey.length === 291) {
+        let randomNum = Math.floor((Math.random() * 1000) + 1)
+        let myRandomWords = randomWords(1000)
+        that.setState({ randomWord: myRandomWords })
+        that.setState({ typerWord: that.state.randomWord[randomNum] })
+      } else {
+        that.getWordsList()
+      }
     })
   }
 
