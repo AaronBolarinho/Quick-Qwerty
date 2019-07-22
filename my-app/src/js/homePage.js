@@ -25,11 +25,13 @@ class Home extends Component {
       gameOver: false,
       timerStarted: false,
       pointsTimer: 0,
-      apiKey: ''
+      apiKey: '',
+      timerPoints: 0,
+      matched: false
     }
   }
 
-  // This handler runs after a user name is entered
+  // This function runs after a user name is entered
   // it sets the state of the userName
 
   enterName = (e) => {
@@ -38,22 +40,32 @@ class Home extends Component {
     this.setState({ named: true })
   }
 
+  // This function times how long it takes a user
+  // to type the current given word. the value it adds
+  // to this.state.timerPoints is then used to help
+  // display both a dynamic message on word complete and
+  // calculate a score based on how fast the word was typed
+
+  pointsTimer = () => {
+    let addPoint = () => {
+      this.setState(prevState => {
+        return { timerPoints: prevState.timerPoints + 1 }
+      })
+    }
+    setInterval(addPoint, 1000)
+  }
+
   // This function starts the game and allows unimpeded
   // typing in the typer form
   gameStarted = () => {
     this.setState({ timerStarted: true })
+    this.pointsTimer()
   }
 
   // This function ends the game and displays the final
   // html
   gameOver = () => {
     this.setState({ gameOver: true })
-  }
-
-  trackSpeed = () => {
-    console.log('trackSpeedRan!')
-
-    // setTimeout(myFunction, 3000)
   }
 
   // This function handles the user's typing in the
@@ -64,16 +76,15 @@ class Home extends Component {
     let wordInProg = e.target.value
     let finalWord = wordInProg.toLowerCase()
 
-    // setTimeout(this.trackSpeed, 1000)
+    if (finalWord === this.state.typerWord) {
+      this.setState({ matched: true })
 
-    if (wordInProg.length === 1) {
-      this.trackSpeed()
-    }
+      let currentSpeed = this.state.timerPoints
 
-    if (!this.state.timerStarted) {
-      alert('Please start the timer :)')
-    } else if (finalWord === this.state.typerWord) {
-      this.state.score++
+      this.renderTyperMsg(currentSpeed)
+
+      this.setState({ timerPoints: 0 })
+
       let randomNum = Math.floor((Math.random() * 1000) + 1)
       this.setState({ typerWord: this.state.randomWord[randomNum] })
       document.getElementById('typer-form').reset()
@@ -98,7 +109,7 @@ class Home extends Component {
   }
 
   // These functions conditionally render most of my html:
-  // renderName, renderScore, renderWord, renderTimer, and renderTyper
+  // renderName, renderScore, renderWord, renderTimer, and renderTyper, renderTyperMsg
   renderName = () => {
     let nameForm
 
@@ -116,12 +127,13 @@ class Home extends Component {
           </form>
         </div>
     } else {
-      nameForm = <div className='nameForm2'>
+      nameForm =
+      <div className='nameForm2'>
         <p className='whiteTxt'>{this.state.userName}!!</p>
         <br></br>
         {this.renderScore()}
       </div>
-    }   
+    }  
     return nameForm
   }
 
@@ -130,17 +142,17 @@ class Home extends Component {
 
     if (this.state.score === 0) {
       score =
-      <div className="whiteTxt">
+      <div className='whiteTxt'>
         <p> Your Score is...</p>
         <p>Nothing Yet!</p>
       </div>
     } else {
       score =
-      <div className="whiteTxt">
+      <div className='whiteTxt'>
         <p> Your Score is...</p>
         <p>{this.state.score}</p>
       </div>
-    }    
+    }   
     return score
   }
 
@@ -150,28 +162,29 @@ class Home extends Component {
     if (this.state.named) {
       word =
       <div>
-        <div className='whiteTxt randomWord3'>
-          <p>Press start and Go!</p>
-        </div>
         <div className='whiteTxt randomWord2'>
           <span>Type it quick! --> </span>
           <span className='typerWord'>{this.state.typerWord}</span>
         </div>
       </div>
-    } else { word =
+    } else {
+      word =
       <div className='whiteTxt randomWord'>
         <p>Your First word is...(Name yourself first)</p>
       </div>
-    }    
+    }  
     return word
   }
 
   renderTimer = () => {
-    let timer =
+    let timer
+
+    if (this.state.named) {
+      timer =
       <div className='clock'>
         <Timer
+          id='deliveryForm'
           initialTime={180000}
-          startImmediately={false}
           direction='backward'
           checkpoints={[
             {
@@ -190,13 +203,11 @@ class Home extends Component {
                 <Timer.Minutes formatValue={value => `${value} minutes `} />
                 <Timer.Seconds /> seconds
               </div>
-              <div>
-                <button onClick={start}>Start</button>
-              </div>
             </React.Fragment>
           )}
         </Timer>
-      </div>   
+      </div>
+    }
     return timer
   }
 
@@ -218,8 +229,85 @@ class Home extends Component {
             <p className='whiteTxt tinyTxt'>While typing, pressing enter will reload the page (no need to press it)</p>
           </div>
         </div>
-      }
+    }
     return typer
+  }
+
+  renderTyperMsg = (points) => {
+    let msg
+    let typerPoints = points
+
+    if (typerPoints > 0) {
+      this.setState({ pointsTimer: typerPoints })
+    }
+
+    // This series of if statements sets the user's
+    // score based on how fast the word is typed
+    if (typerPoints === 1) {
+      this.setState(prevState => {
+        return { score: prevState.score + 10 }
+      })
+    } else if (typerPoints === 2) {
+      this.setState(prevState => {
+        return { score: prevState.score + 8 }
+      })
+    } else if (typerPoints === 3) {
+      this.setState(prevState => {
+        return { score: prevState.score + 6 }
+      })
+    } else if (typerPoints === 4) {
+      this.setState(prevState => {
+        return { score: prevState.score + 4 }
+      })
+    } else if (typerPoints === 5) {
+      this.setState(prevState => {
+        return { score: prevState.score + 2 }
+      })
+    } else if (typerPoints >= 6) {
+      this.setState(prevState => {
+        return { score: prevState.score + 1 }
+      })
+    }
+
+    // This series of if statements sets the completion
+    // mesage based on how fast the word is typed
+    if (this.state.pointsTimer === 1) {
+      msg =
+        <div className='whiteTxt randomWord3'>
+          <p>Amazing!</p>
+        </div>
+    } else if (this.state.pointsTimer === 2) {
+      msg =
+        <div className='whiteTxt randomWord3'>
+          <p>Saaweeet</p>
+        </div>
+    } else if (this.state.pointsTimer === 3) {
+      msg =
+        <div className='whiteTxt randomWord3'>
+          <p>Noice</p>
+        </div>
+    } else if (this.state.pointsTimer === 4) {
+      msg =
+        <div className='whiteTxt randomWord3'>
+          <p>Not bad, Not bad</p>
+        </div>
+    } else if (this.state.pointsTimer === 5) {
+      msg =
+        <div className='whiteTxt randomWord3'>
+          <p>Keep going!</p>
+        </div>
+    } else if (this.state.pointsTimer >= 6) {
+      msg =
+        <div className='whiteTxt randomWord3'>
+          <p>the timer IS ticking you know....</p>
+        </div>
+    } else if (this.state.named) {
+      msg =
+        <div className='whiteTxt randomWord3'>
+          <p>go go Go!!</p>
+        </div>
+    }
+    return msg
   }
 
   // Here I scrape random-word-api for a new api key,
@@ -247,7 +335,7 @@ class Home extends Component {
   }
 
   render() {
-    console.log('This is the state', this.state)
+    // console.log('This is the state', this.state)
     if (this.state.gameOver) {
       return <div className='homePg whiteTxt'>
         <div className='gameOver1'>
@@ -264,6 +352,7 @@ class Home extends Component {
             <p> Quick Qwerty</p>
           </div>
           {this.renderName()}
+          {this.renderTyperMsg()}
           {this.renderWord()}
           {this.renderTimer()}
           {this.renderTyper()}
