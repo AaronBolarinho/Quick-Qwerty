@@ -27,10 +27,10 @@ class Home extends Component {
       pointsTimer: 0,
       apiKey: '',
       timerPoints: 0,
-      matched: false
+      matched: false,
+      leaderBoard: ''
     }
   }
-
   // This function runs after a user name is entered
   // it sets the state of the userName
 
@@ -64,8 +64,26 @@ class Home extends Component {
 
   // This function ends the game and displays the final
   // html
+
+  // this is the json data storage http://myjson.com/pok7h
   gameOver = () => {
-    this.setState({ gameOver: true })
+
+    // This updates my json store with the user's
+    // game result
+    this.sendFinalScore()
+
+    // This updates the state with the new leaderBoard
+    axios.get(`https://api.myjson.com/bins/9285t`)
+      .then(response => {
+        const myVariable = response.data
+        console.log(myVariable)
+        this.setState({ leaderBoard: myVariable })
+        console.log('This is the leaderboard', this.state.leaderBoard)
+        this.setState({ gameOver: true })
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   // This function handles the user's typing in the
@@ -108,6 +126,28 @@ class Home extends Component {
       })
   }
 
+  sendFinalScore = () => {
+    let userName = this.state.userName
+    let score = this.state.score
+    let finalScore =
+      { name: userName,
+        score: score
+      }
+    let myLeaders1 = this.state.leaderBoard
+    console.log('this is my variable', myLeaders1)
+    myLeaders1['leaders'].push(finalScore)
+
+    $.ajax({
+      url: 'https://api.myjson.com/bins/9285t',
+      type: 'PUT',
+      data: JSON.stringify(myLeaders1),
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      success: function (data, textStatus, jqXHR){
+       }
+    })  
+  }
+
   // These functions conditionally render most of my html:
   // renderName, renderScore, renderWord, renderTimer, and renderTyper, renderTyperMsg
   renderName = () => {
@@ -125,6 +165,9 @@ class Home extends Component {
             <br></br>
             <input type='submit' value='I am so named' />
           </form>
+          <div className='gameOver4'>
+            {this.renderLeaderboard()}
+          </div>
         </div>
     } else {
       nameForm =
@@ -310,6 +353,83 @@ class Home extends Component {
     return msg
   }
 
+  renderGameOver = () => {
+    let gameOver =
+      <div className='whiteTxt'>
+        <div className='gameOver3'>
+          {this.renderLeaderboard()}
+        </div>
+        <div className='gameOver1'>
+          <p> Well done {this.state.userName}! Your Score is {this.state.score}</p>
+        </div>
+        <div className='gameOver2'>
+          <p> Reload the page to play again!</p>
+        </div>
+      </div>
+
+    return gameOver
+  }
+
+  renderLeaderboard = () => {
+    if (this.state.leaderBoard) {
+      let myLeaders = this.state.leaderBoard.leaders
+
+      // function for dynamic sorting
+      let compareValues = (key, order = 'asc') => {
+        return function (a, b) {
+          if (!a.hasOwnProperty(key) || !b.hasOwnProperty(key)) {
+            // property doesn't exist on either object
+            return 0
+          }
+
+          const varA = (typeof a[key] === 'string') ?
+            a[key].toUpperCase() : a[key]
+          const varB = (typeof b[key] === 'string') ?
+            b[key].toUpperCase() : b[key]
+
+          let comparison = 0
+          if (varA > varB) {
+            comparison = 1
+          } else if (varA < varB) {
+            comparison = -1
+          }
+          return (
+            (order === 'desc') ? (comparison * -1) : comparison
+          )
+        }
+      }
+
+      let myLeadersSorted = myLeaders.sort(compareValues('score', 'desc'))
+      let myLeadersSliced = myLeadersSorted.slice(0, 6)
+
+      console.log('This is the sorted leadeboard', myLeadersSorted)
+
+      let leaderBoard =
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {myLeadersSliced.map((item, key) => {
+              return (
+                <tr className='d-flex container' key={key}>
+                  <td>{item.name}</td>
+                  <td>{item.score}</td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+      return leaderBoard
+    }
+    return <p></p>
+  }
+
   // Here I scrape random-word-api for a new api key,
   // then I call getWordsList to make the api call
   componentDidMount() {
@@ -332,19 +452,27 @@ class Home extends Component {
         that.getWordsList()
       }
     })
+
+    axios.get(`https://api.myjson.com/bins/9285t`)
+      .then(response => {
+        const myVariable = response.data
+        console.log(myVariable)
+        this.setState({ leaderBoard: myVariable })
+        console.log('This is the leaderboard', this.state.leaderBoard)
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
 
   render() {
     // console.log('This is the state', this.state)
     if (this.state.gameOver) {
-      return <div className='homePg whiteTxt'>
-        <div className='gameOver1'>
-          <p> Well done {this.state.userName}! Your Score is {this.state.score}</p>
+      return (
+        <div className='homePg'>
+          {this.renderGameOver()}
         </div>
-        <div className='gameOver2'>
-          <p> Reload the page to play again!</p>
-        </div>
-      </div>
+      )
     } else {
       return (
         <div className='homePg'>

@@ -118,6 +118,21 @@ table { border-collapse: collapse; border-spacing: 0;}
   font-size: 14px;
 }
 
+.gameOver3 {
+    position: absolute;
+    left: 69%;
+    top: 16%;
+    font-size: 161%;
+}
+
+.gameOver4 {
+    position: absolute;
+    left: 21%;
+    top: 250%;
+    font-size: 101%;
+    color: white;
+}
+
 @media screen and (max-width: 1390px) and (min-width: 769px) {
 
   .whiteTxt {
