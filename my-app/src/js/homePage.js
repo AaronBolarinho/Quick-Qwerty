@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import '../css/App.css'
+// import '../css/App.css'
+//
+import '../css/AppNew.css'
 //
 import Timer from 'react-compound-timer'
 //
@@ -23,7 +25,6 @@ class Home extends Component {
       typerWord: '',
       randomWord: '',
       gameOver: false,
-      timerStarted: false,
       pointsTimer: 0,
       apiKey: '',
       timerPoints: 0,
@@ -55,19 +56,14 @@ class Home extends Component {
     setInterval(addPoint, 1000)
   }
 
-  // This function starts the game and allows unimpeded
-  // typing in the typer form
+  // This function starts the game
   gameStarted = () => {
-    this.setState({ timerStarted: true })
     this.pointsTimer()
   }
 
   // This function ends the game and displays the final
   // html
-
-  // this is the json data storage http://myjson.com/pok7h
   gameOver = () => {
-
     // This updates my json store with the user's
     // game result
     this.sendFinalScore()
@@ -155,9 +151,9 @@ class Home extends Component {
 
     if (!this.state.named) {
       nameForm =
-        <div className='nameForm'>
+      <div className='col-12 centerText startingForm'>
           <form onSubmit={this.enterName}>
-            <label className='whiteTxt'>
+            <label>
               Name Thyself...Keyboard Warrior!
               <br></br>
               <input type='text' name='name' required/>
@@ -165,18 +161,15 @@ class Home extends Component {
             <br></br>
             <input type='submit' value='I am so named' />
           </form>
-          <div className='gameOver4'>
             {this.renderLeaderboard()}
-          </div>
-        </div>
+      </div>
     } else {
       nameForm =
-      <div className='nameForm2'>
-        <p className='whiteTxt'>{this.state.userName}!!</p>
-        <br></br>
-        {this.renderScore()}
-      </div>
-    }  
+        <div className='userName centerText'>
+          <p>{this.state.userName}!!</p>
+          {this.renderScore()}
+        </div>
+    }
     return nameForm
   }
 
@@ -185,13 +178,13 @@ class Home extends Component {
 
     if (this.state.score === 0) {
       score =
-      <div className='whiteTxt'>
+      <div>
         <p> Your Score is...</p>
         <p>Nothing Yet!</p>
       </div>
     } else {
       score =
-      <div className='whiteTxt'>
+      <div>
         <p> Your Score is...</p>
         <p>{this.state.score}</p>
       </div>
@@ -201,19 +194,25 @@ class Home extends Component {
 
   renderWord = () => {
     let word
+    let rightArrow = `<==`
+    let LeftArrow = `==>`
 
     if (this.state.named) {
       word =
       <div>
-        <div className='whiteTxt randomWord2'>
-          <span>Type it quick! --> </span>
-          <span className='typerWord'>{this.state.typerWord}</span>
+        <div className='centerText'>
+          <span>Type it quick!{LeftArrow} </span>
+          <span className='challengeWord titleFont'>{this.state.typerWord}</span>
+          <span> {rightArrow} Type it quick! </span>
         </div>
       </div>
     } else {
       word =
-      <div className='whiteTxt randomWord'>
-        <p>Your First word is...(Name yourself first)</p>
+      <div className="visBackground">
+        <div className='col-12 centerText titleFont startingLabel'>
+          <p>Quick Qwerty is a speed typing game...</p>
+          <p>Enter your name, and take the challenge!</p>
+        </div>
       </div>
     }  
     return word
@@ -224,31 +223,33 @@ class Home extends Component {
 
     if (this.state.named) {
       timer =
-      <div className='clock'>
-        <Timer
-          id='deliveryForm'
-          initialTime={180000}
-          direction='backward'
-          checkpoints={[
-            {
-              time: 5,
-              callback: () => this.gameOver()
-            },
-            {
-              time: 179999,
-              callback: () => this.gameStarted()
-            }
-          ]}
-        >
-          {({ start }) => (
-            <React.Fragment>
-              <div className='whiteTxt'>
-                <Timer.Minutes formatValue={value => `${value} minutes `} />
-                <Timer.Seconds /> seconds
-              </div>
-            </React.Fragment>
-          )}
-        </Timer>
+      <div className='visBackground'>
+        <div className='clock centerText titleFont'>
+          <Timer
+            id='deliveryForm'
+            initialTime={180000}
+            direction='backward'
+            checkpoints={[
+              {
+                time: 5,
+                callback: () => this.gameOver()
+              },
+              {
+                time: 179999,
+                callback: () => this.gameStarted()
+              }
+            ]}
+          >
+            {({ start }) => (
+              <React.Fragment>
+                <div>
+                  <Timer.Minutes formatValue={value => `${value} minutes `} />
+                  <Timer.Seconds /> seconds
+                </div>
+              </React.Fragment>
+            )}
+          </Timer>
+        </div>
       </div>
     }
     return timer
@@ -259,7 +260,7 @@ class Home extends Component {
 
     if (this.state.named) {
       typer =
-        <div className='typerForm'>
+        <div className='centerText challengeForm'>
           <form id='typer-form'>
             <input className='typerFormInput'
               onChange={this.handleChange}
@@ -269,7 +270,7 @@ class Home extends Component {
               required/>
           </form>
           <div>
-            <p className='whiteTxt tinyTxt'>While typing, pressing enter will reload the page (no need to press it)</p>
+            <p>No need to press enter</p>
           </div>
         </div>
     }
@@ -316,37 +317,37 @@ class Home extends Component {
     // mesage based on how fast the word is typed
     if (this.state.pointsTimer === 1) {
       msg =
-        <div className='whiteTxt randomWord3'>
+        <div className='successWord centerText'>
           <p>Amazing!</p>
         </div>
     } else if (this.state.pointsTimer === 2) {
       msg =
-        <div className='whiteTxt randomWord3'>
+        <div className='successWord centerText'>
           <p>Saaweeet</p>
         </div>
     } else if (this.state.pointsTimer === 3) {
       msg =
-        <div className='whiteTxt randomWord3'>
+        <div className='successWord centerText'>
           <p>Noice</p>
         </div>
     } else if (this.state.pointsTimer === 4) {
       msg =
-        <div className='whiteTxt randomWord3'>
+        <div className='successWord centerText'>
           <p>Not bad, Not bad</p>
         </div>
     } else if (this.state.pointsTimer === 5) {
       msg =
-        <div className='whiteTxt randomWord3'>
+        <div className='successWord centerText'>
           <p>Keep going!</p>
         </div>
     } else if (this.state.pointsTimer >= 6) {
       msg =
-        <div className='whiteTxt randomWord3'>
+        <div className='successWord centerText'>
           <p>the timer IS ticking you know....</p>
         </div>
     } else if (this.state.named) {
       msg =
-        <div className='whiteTxt randomWord3'>
+        <div className='successWord centerText'>
           <p>go go Go!!</p>
         </div>
     }
@@ -355,14 +356,14 @@ class Home extends Component {
 
   renderGameOver = () => {
     let gameOver =
-      <div className='whiteTxt'>
-        <div className='gameOver3'>
-          {this.renderLeaderboard()}
-        </div>
-        <div className='gameOver1'>
+      <div className='centerText endingForm'>
+        <div className='centerText endingMsg1'>
           <p> Well done {this.state.userName}! Your Score is {this.state.score}</p>
         </div>
-        <div className='gameOver2'>
+        <div>
+          {this.renderLeaderboard()}
+        </div>
+        <div className='centerText endingMsg2'>
           <p> Reload the page to play again!</p>
         </div>
       </div>
@@ -406,7 +407,7 @@ class Home extends Component {
 
       let leaderBoard =
       <div>
-        <table>
+        <table align='center'>
           <thead>
             <tr>
               <th>Name</th>
@@ -416,7 +417,7 @@ class Home extends Component {
           <tbody>
             {myLeadersSliced.map((item, key) => {
               return (
-                <tr className='d-flex container' key={key}>
+                <tr key={key}>
                   <td>{item.name}</td>
                   <td>{item.score}</td>
                 </tr>
@@ -469,21 +470,25 @@ class Home extends Component {
     // console.log('This is the state', this.state)
     if (this.state.gameOver) {
       return (
-        <div className='homePg'>
-          {this.renderGameOver()}
+        <div className='pageBackground'>
+          <div className='d-flex container bodyFont'>
+            {this.renderGameOver()}
+          </div>
         </div>
       )
     } else {
       return (
-        <div className='homePg'>
-          <div className='whiteTxt title'>
-            <p> Quick Qwerty</p>
+        <div className='pageBackground'>
+          <div className='d-flex container bodyFont'>
+            <div className='col-12 centerText titleFont title'>
+              <p> Quick Qwerty</p>
+            </div>
+            {this.renderName()}
+            {this.renderTyperMsg()}
+            {this.renderWord()}
+            {this.renderTyper()}
+            {this.renderTimer()}
           </div>
-          {this.renderName()}
-          {this.renderTyperMsg()}
-          {this.renderWord()}
-          {this.renderTimer()}
-          {this.renderTyper()}
         </div>
       )
     }
