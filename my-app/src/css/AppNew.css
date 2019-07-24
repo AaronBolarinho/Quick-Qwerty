@@ -184,16 +184,9 @@
 
 @media screen and (max-width: 768px) {
 
-	html {
-	  overflow:   scroll;
-	}
-	::-webkit-scrollbar {
-	    width: 0px;
-	    background: transparent; /* make scrollbar transparent */
-	}
-
 	.title {
-		font-size: 300%;
+		font-size: 250%;
+    	margin-top: 15%;
 	}
 
 	.centerText {
@@ -209,23 +202,23 @@
 	}
 
 	.startingForm {
-		font-size: 150%;
+		font-size: 120%;
 	}
 
 	.startingLabel {
 		font-family: 'Cinzel Bold', serif;
-		font-size: 150%;
-		margin-right: 10%;
-    	margin-left: 10%;
-    	opacity: 1;
+	    font-size: 103%;
+	    margin-right: 5%;
+	    margin-left: 5%;
+	    opacity: 1;
 	}
 
 	.userName {
-		font-size: 170%;
+		font-size: 150%;
 	}
 
 	.successWord {
-		font-size: 180%;
+		font-size: 150%;
 	}
 
 	.challengeWord {
@@ -237,9 +230,7 @@
 	}
 
 	.clock {
-		font-size: 250%;
-		margin-right: 10%;
-    	margin-left: 10%;
+		font-size: 170%;
     	margin-top: 2%;
 	}
 
