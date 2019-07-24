@@ -101,7 +101,7 @@ class Home extends Component {
 
       let randomNum = Math.floor((Math.random() * 1000) + 1)
       this.setState({ typerWord: this.state.randomWord[randomNum] })
-      document.getElementById('typer-form').reset()
+      document.getElementById('inputBox').value = ''
     }
   }
 
@@ -261,17 +261,13 @@ class Home extends Component {
     if (this.state.named) {
       typer =
         <div className='centerText challengeForm'>
-          <form id='typer-form'>
-            <input className='typerFormInput'
+            <input
+              id='inputBox'
               onChange={this.handleChange}
               type='textarea'
               placeholder='Type Qwerty Quick!'
               name='typedAnswer'
               required/>
-          </form>
-          <div>
-            <p>No need to press enter</p>
-          </div>
         </div>
     }
     return typer
