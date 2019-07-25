@@ -151,17 +151,17 @@ class Home extends Component {
 
     if (!this.state.named) {
       nameForm =
-      <div className='col-12 centerText startingForm'>
-          <form onSubmit={this.enterName}>
-            <label>
-              Name Thyself...Keyboard Warrior!
-              <br></br>
-              <input type='text' name='name' required/>
-            </label>
+      <div className='col-12 centerText startingForm animated jackInTheBox'>
+        <form onSubmit={this.enterName}>
+          <label>
+            Name Thyself...Keyboard Warrior!
             <br></br>
-            <input type='submit' value='I am so named' />
-          </form>
-            {this.renderLeaderboard()}
+            <input type='text' name='name' required/>
+          </label>
+          <br></br>
+          <input type='submit' value='I am so named' />
+        </form>
+        {this.renderLeaderboard()}
       </div>
     } else {
       nameForm =
@@ -261,13 +261,13 @@ class Home extends Component {
     if (this.state.named) {
       typer =
         <div className='centerText challengeForm'>
-            <input
-              id='inputBox'
-              onChange={this.handleChange}
-              type='textarea'
-              placeholder='Type Qwerty Quick!'
-              name='typedAnswer'
-              required/>
+          <input
+            id='inputBox'
+            onChange={this.handleChange}
+            type='textarea'
+            placeholder='Type Qwerty Quick!'
+            name='typedAnswer'
+            required/>
         </div>
     }
     return typer
@@ -313,38 +313,38 @@ class Home extends Component {
     // mesage based on how fast the word is typed
     if (this.state.pointsTimer === 1) {
       msg =
-        <div className='successWord centerText'>
+        <div className='successWord centerText animated bounceIn'>
           <p>Amazing!</p>
         </div>
     } else if (this.state.pointsTimer === 2) {
       msg =
-        <div className='successWord centerText'>
+        <div className='successWord centerText animated jello'>
           <p>Saaweeet</p>
         </div>
     } else if (this.state.pointsTimer === 3) {
       msg =
-        <div className='successWord centerText'>
+        <div className='successWord centerText animated tada'>
           <p>Noice</p>
         </div>
     } else if (this.state.pointsTimer === 4) {
       msg =
-        <div className='successWord centerText'>
+        <div className='successWord centerText animated rubberBand'>
           <p>Not bad, Not bad</p>
         </div>
     } else if (this.state.pointsTimer === 5) {
       msg =
-        <div className='successWord centerText'>
+        <div className='successWord centerText animated flash'>
           <p>Keep going!</p>
         </div>
     } else if (this.state.pointsTimer >= 6) {
       msg =
-        <div className='successWord centerText'>
+        <div className='successWord centerText animated shake'>
           <p>the timer IS ticking you know....</p>
         </div>
     } else if (this.state.named) {
       msg =
-        <div className='successWord centerText'>
-          <p>go go Go!!</p>
+        <div className='successWord centerText animated slideInLeft'>
+          <p className=''>go go Go!!</p>
         </div>
     }
     return msg
@@ -476,7 +476,7 @@ class Home extends Component {
       return (
         <div className='pageBackground'>
           <div className='d-flex container bodyFont'>
-            <div className='col-12 centerText titleFont title'>
+            <div className='col-12 centerText titleFont title animated zoomIn'>
               <p> Quick Qwerty</p>
             </div>
             {this.renderName()}
