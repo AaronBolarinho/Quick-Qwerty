@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-// import '../css/App.css'
 //
 import '../css/AppNew.css'
 //
@@ -72,9 +71,7 @@ class Home extends Component {
     axios.get(`https://api.myjson.com/bins/9285t`)
       .then(response => {
         const myVariable = response.data
-        console.log(myVariable)
         this.setState({ leaderBoard: myVariable })
-        console.log('This is the leaderboard', this.state.leaderBoard)
         this.setState({ gameOver: true })
       })
       .catch(error => {
@@ -129,19 +126,21 @@ class Home extends Component {
       { name: userName,
         score: score
       }
-    let myLeaders1 = this.state.leaderBoard
-    console.log('this is my variable', myLeaders1)
-    myLeaders1['leaders'].push(finalScore)
+    let myLeadersSliced = this.state.leaderBoard.leaders.slice(0, 7)
+
+    myLeadersSliced.push(finalScore)
+
+    let finalLeaderboard = { leaders: myLeadersSliced }
 
     $.ajax({
       url: 'https://api.myjson.com/bins/9285t',
       type: 'PUT',
-      data: JSON.stringify(myLeaders1),
+      data: JSON.stringify(finalLeaderboard),
       contentType: 'application/json; charset=utf-8',
       dataType: 'json',
-      success: function (data, textStatus, jqXHR){
-       }
-    })  
+      success: function (data, textStatus, jqXHR) {
+      }
+    })
   }
 
   // These functions conditionally render most of my html:
@@ -208,7 +207,7 @@ class Home extends Component {
       </div>
     } else {
       word =
-      <div className="visBackground">
+      <div className='"visBackground'>
         <div className='col-12 centerText titleFont startingLabel'>
           <p>Quick Qwerty is a speed typing game...</p>
           <p>Enter your name, and take the challenge!</p>
@@ -227,7 +226,7 @@ class Home extends Component {
         <div className='clock centerText titleFont'>
           <Timer
             id='deliveryForm'
-            initialTime={180000}
+            initialTime={1800}
             direction='backward'
             checkpoints={[
               {
@@ -235,7 +234,7 @@ class Home extends Component {
                 callback: () => this.gameOver()
               },
               {
-                time: 179999,
+                time: 1799,
                 callback: () => this.gameStarted()
               }
             ]}
@@ -399,8 +398,6 @@ class Home extends Component {
       let myLeadersSorted = myLeaders.sort(compareValues('score', 'desc'))
       let myLeadersSliced = myLeadersSorted.slice(0, 6)
 
-      console.log('This is the sorted leadeboard', myLeadersSorted)
-
       let leaderBoard =
       <div>
         <table align='center'>
@@ -453,9 +450,7 @@ class Home extends Component {
     axios.get(`https://api.myjson.com/bins/9285t`)
       .then(response => {
         const myVariable = response.data
-        console.log(myVariable)
         this.setState({ leaderBoard: myVariable })
-        console.log('This is the leaderboard', this.state.leaderBoard)
       })
       .catch(error => {
         console.log(error)
