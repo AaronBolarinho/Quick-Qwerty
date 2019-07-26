@@ -194,7 +194,7 @@ class Home extends Component {
           <label>
             Name Thyself...Keyboard Warrior!
             <br></br>
-            <input type='text' name='name' required/>
+            <input type='text' name='name' required autoFocus/>
           </label>
           <br></br>
           <input type='submit' value='I am so named' />
@@ -313,7 +313,8 @@ class Home extends Component {
             type='textarea'
             placeholder='Type Qwerty Quick!'
             name='typedAnswer'
-            required/>
+            required
+            autoFocus/>
         </div>
     }
     return typer
