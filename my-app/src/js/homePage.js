@@ -18,6 +18,9 @@ import { Form } from 'react-bootstrap'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
 //
 import 'react-tabs/style/react-tabs.css'
+//
+import { Progress } from 'react-sweet-progress';
+import "react-sweet-progress/lib/style.css";
 
 
 class Home extends Component {
@@ -36,7 +39,8 @@ class Home extends Component {
       timerPoints: 0,
       matched: false,
       leaderBoard: '',
-      key: 1
+      key: 1,
+      scoreToBeat: 0
     }
   }
   // This function runs after a user name is entered
@@ -179,11 +183,25 @@ class Home extends Component {
   // This function records the user's choice of time
   setUserTime = (event) => {
     let userTime = event.target.value
+
+    let answer = 0
+
+    if (userTime === '60000') {
+      answer = this.state.leaderBoard.OneMinute[1].score
+      this.setState({ scoreToBeat: answer })
+    } else if (userTime === '180000') {
+      answer = this.state.leaderBoard.ThreeMinutes[0].score
+      this.setState({ scoreToBeat: answer })
+    } else if (userTime === '300000') {
+      answer = this.state.leaderBoard.FiveMinutes[1].score
+      this.setState({ scoreToBeat: answer })
+    }
+
     this.setState({ timeChosen: userTime })
   }
 
   // These functions conditionally render most of my html:
-  // renderName, renderScore, renderWord, renderTimer, and renderTyper, renderTyperMsg
+  // renderName, renderScore, renderWord, renderTimer, and renderTyper, renderTyperMsg, renderProgressBar
   renderName = () => {
     let nameForm
 
@@ -552,6 +570,29 @@ class Home extends Component {
     return chooseTime
   }
 
+  renderProgressBar = () => {
+    let progress
+
+    let score = this.state.score
+    let highScore = this.state.scoreToBeat
+
+    function percentage(partialValue, totalValue) {
+      return (100 * partialValue) / totalValue;
+    }
+
+    let myPercentage = percentage(score, highScore)
+
+    if (this.state.timeChosen) {
+      progress =
+      <div className='centerText'>
+        <Progress percent={myPercentage} status='success' />
+        <p>Your Progress to High Score</p>
+      </div>
+    }
+
+    return progress
+  }
+
   // Here I scrape random-word-api for a new api key,
   // then I call getWordsList to make the api call
   componentDidMount() {
@@ -606,6 +647,7 @@ class Home extends Component {
             {this.renderTyperMsg()}
             {this.renderWord()}
             {this.renderTyper()}
+            {this.renderProgressBar()}
             {this.renderTimer()}
           </div>
         </div>
