@@ -540,7 +540,6 @@ class Home extends Component {
           <Form.Group controlId='exampleForm.ControlSelect1'>
             <Form.Control as='select'>
               <option>Choose your time</option>
-              <option value='6000'>testing</option>
               <option value='60000'>1 Minute</option>
               <option value='180000'>3 Minutes</option>
               <option value='300000'>5 Minutes</option>
