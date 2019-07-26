@@ -12,6 +12,12 @@ import $ from 'jquery'
 // the random word API server went down.
 // It is explained a little more below.
 import randomWords from 'random-words'
+//
+import { Form } from 'react-bootstrap'
+//
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+//
+import 'react-tabs/style/react-tabs.css'
 
 
 class Home extends Component {
@@ -20,6 +26,7 @@ class Home extends Component {
     this.state = {
       userName: '',
       named: false,
+      timeChosen: 0,
       score: 0,
       typerWord: '',
       randomWord: '',
@@ -28,7 +35,8 @@ class Home extends Component {
       apiKey: '',
       timerPoints: 0,
       matched: false,
-      leaderBoard: ''
+      leaderBoard: '',
+      key: 1
     }
   }
   // This function runs after a user name is entered
@@ -119,6 +127,8 @@ class Home extends Component {
       })
   }
 
+  // This function sends the final score to the json
+  // storage api
   sendFinalScore = () => {
     let userName = this.state.userName
     let score = this.state.score
@@ -126,11 +136,28 @@ class Home extends Component {
       { name: userName,
         score: score
       }
-    let myLeadersSliced = this.state.leaderBoard.leaders.slice(0, 7)
+    let OneMinuteSliced = this.state.leaderBoard.OneMinute.slice(0, 7)
+    let ThreeMinutesSliced = this.state.leaderBoard.ThreeMinutes.slice(0, 7)
+    let FiveMinutesSliced = this.state.leaderBoard.FiveMinutes.slice(0, 7)
 
-    myLeadersSliced.push(finalScore)
+    console.log('is the time really chosen?', this.state.timeChosen)
 
-    let finalLeaderboard = { leaders: myLeadersSliced }
+    if (this.state.timeChosen === '60000') {
+      OneMinuteSliced.push(finalScore)
+    } else if (this.state.timeChosen === '180000') {
+      ThreeMinutesSliced.push(finalScore)
+    } else if (this.state.timeChosen === '300000') {
+      FiveMinutesSliced.push(finalScore)
+    } else {
+      console.log('this basic test ran')
+    }
+
+    let finalLeaderboard = { OneMinute: OneMinuteSliced,
+      ThreeMinutes: ThreeMinutesSliced,
+      FiveMinutes: FiveMinutesSliced
+    }
+
+    console.log(finalLeaderboard)
 
     $.ajax({
       url: 'https://api.myjson.com/bins/9285t',
@@ -143,12 +170,24 @@ class Home extends Component {
     })
   }
 
+  // This function changes the active tabs on click
+  handleSelect = (key) => {
+    console.log('selected' + key)
+    this.setState({ key: key })
+  }
+
+  // This function records the user's choice of time
+  setUserTime = (event) => {
+    let userTime = event.target.value
+    this.setState({ timeChosen: userTime })
+  }
+
   // These functions conditionally render most of my html:
   // renderName, renderScore, renderWord, renderTimer, and renderTyper, renderTyperMsg
   renderName = () => {
     let nameForm
 
-    if (!this.state.named) {
+    if (!this.state.named && !this.state.timeChosen) {
       nameForm =
       <div className='col-12 centerText startingForm animated jackInTheBox'>
         <form onSubmit={this.enterName}>
@@ -160,6 +199,12 @@ class Home extends Component {
           <br></br>
           <input type='submit' value='I am so named' />
         </form>
+        {this.renderLeaderboard()}
+      </div>
+    } else if (this.state.named && !this.state.timeChosen) {
+      nameForm =
+      <div className='col-12 centerText startingForm'>
+        {this.renderChooseTime()}
         {this.renderLeaderboard()}
       </div>
     } else {
@@ -196,7 +241,7 @@ class Home extends Component {
     let rightArrow = `<==`
     let LeftArrow = `==>`
 
-    if (this.state.named) {
+    if (this.state.timeChosen) {
       word =
       <div>
         <div className='centerText'>
@@ -207,7 +252,7 @@ class Home extends Component {
       </div>
     } else {
       word =
-      <div className='"visBackground'>
+      <div className='visBackground'>
         <div className='col-12 centerText titleFont startingLabel'>
           <p>Quick Qwerty is a speed typing game...</p>
           <p>Enter your name, and take the challenge!</p>
@@ -220,13 +265,15 @@ class Home extends Component {
   renderTimer = () => {
     let timer
 
-    if (this.state.named) {
+    if (this.state.timeChosen) {
+      let gameStart = this.state.timeChosen -1
+
       timer =
       <div className='visBackground'>
         <div className='clock centerText titleFont'>
           <Timer
             id='deliveryForm'
-            initialTime={1800}
+            initialTime={this.state.timeChosen}
             direction='backward'
             checkpoints={[
               {
@@ -234,7 +281,7 @@ class Home extends Component {
                 callback: () => this.gameOver()
               },
               {
-                time: 1799,
+                time: gameStart,
                 callback: () => this.gameStarted()
               }
             ]}
@@ -257,7 +304,7 @@ class Home extends Component {
   renderTyper = () => {
     let typer
 
-    if (this.state.named) {
+    if (this.state.timeChosen) {
       typer =
         <div className='centerText challengeForm'>
           <input
@@ -308,8 +355,8 @@ class Home extends Component {
       })
     }
 
-    // This series of if statements sets the completion
-    // mesage based on how fast the word is typed
+    // This series of if statements sets the success
+    // message based on how fast the word is typed
     if (this.state.pointsTimer === 1) {
       msg =
         <div className='successWord centerText animated bounceIn'>
@@ -340,7 +387,7 @@ class Home extends Component {
         <div className='successWord centerText animated shake'>
           <p>the timer IS ticking you know....</p>
         </div>
-    } else if (this.state.named) {
+    } else if (this.state.timeChosen) {
       msg =
         <div className='successWord centerText animated slideInLeft'>
           <p className=''>go go Go!!</p>
@@ -368,7 +415,9 @@ class Home extends Component {
 
   renderLeaderboard = () => {
     if (this.state.leaderBoard) {
-      let myLeaders = this.state.leaderBoard.leaders
+      let OneMinute = this.state.leaderBoard.OneMinute
+      let ThreeMinutes = this.state.leaderBoard.ThreeMinutes
+      let FiveMinutes = this.state.leaderBoard.FiveMinutes
 
       // function for dynamic sorting
       let compareValues = (key, order = 'asc') => {
@@ -395,33 +444,112 @@ class Home extends Component {
         }
       }
 
-      let myLeadersSorted = myLeaders.sort(compareValues('score', 'desc'))
-      let myLeadersSliced = myLeadersSorted.slice(0, 6)
+      let OneMinuteSorted = OneMinute.sort(compareValues('score', 'desc'))
+      let ThreeMinutesSorted = ThreeMinutes.sort(compareValues('score', 'desc'))
+      let FiveMinutesSorted = FiveMinutes.sort(compareValues('score', 'desc'))
+
+      let OneMinuteSliced = OneMinuteSorted.slice(0, 6)
+      let ThreeMinutesSliced = ThreeMinutesSorted.slice(0, 6)
+      let FiveMinutesSliced = FiveMinutesSorted.slice(0, 6)
 
       let leaderBoard =
-      <div>
-        <table align='center'>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {myLeadersSliced.map((item, key) => {
-              return (
-                <tr key={key}>
-                  <td>{item.name}</td>
-                  <td>{item.score}</td>
+      <Tabs>
+        <TabList>
+          <Tab>1 Min</Tab>
+          <Tab>3 Min</Tab>
+          <Tab>5 Min</Tab>
+        </TabList>
+
+        <TabPanel>
+          <div>
+            <table align='center'>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Score</th>
                 </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+              <tbody>
+                {OneMinuteSliced.map((item, key) => {
+                  return (
+                    <tr key={key}>
+                      <td>{item.name}</td>
+                      <td>{item.score}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </TabPanel>
+        <TabPanel>
+          <div>
+            <table align='center'>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ThreeMinutesSliced.map((item, key) => {
+                  return (
+                    <tr key={key}>
+                      <td>{item.name}</td>
+                      <td>{item.score}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </TabPanel>
+        <TabPanel>
+          <div>
+            <table align='center'>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {FiveMinutesSliced.map((item, key) => {
+                  return (
+                    <tr key={key}>
+                      <td>{item.name}</td>
+                      <td>{item.score}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </TabPanel>
+      </Tabs>
+
       return leaderBoard
     }
     return <p></p>
+  }
+
+  renderChooseTime = () => {
+    let chooseTime =
+      <div className='chooseTimeForm'>
+        <Form onChange={this.setUserTime}>
+          <Form.Group controlId='exampleForm.ControlSelect1'>
+            <Form.Control as='select'>
+              <option>Choose your time</option>
+              <option value='6000'>testing</option>
+              <option value='60000'>1 Minute</option>
+              <option value='180000'>3 Minutes</option>
+              <option value='300000'>5 Minutes</option>
+            </Form.Control>
+          </Form.Group>
+        </Form>
+      </div>
+
+    return chooseTime
   }
 
   // Here I scrape random-word-api for a new api key,
