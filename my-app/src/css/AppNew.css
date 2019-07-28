@@ -118,10 +118,10 @@
 
 	.startingLabel {
 		font-family: 'Cinzel Bold', serif;
-		font-size: 150%;
-		margin-right: 10%;
-    	margin-left: 10%;
-    	opacity: 1;
+	    font-size: 103%;
+	    margin-right: 5%;
+	    margin-left: 5%;
+	    opacity: 1;
 	}
 
 	.userName {
@@ -183,6 +183,9 @@
 	.visBackground {
 		background: white;
 		opacity: 0.5;
+		width: 143%;
+	    position: relative;
+	    right: 6em;
 	}
 
 }
@@ -275,6 +278,9 @@
 	.visBackground {
 		background: white;
 		opacity: 0.5;
+		width: 143%;
+	    position: relative;
+	    right: 6em;
 	}
 
 }
